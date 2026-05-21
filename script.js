@@ -72,34 +72,17 @@ async function chargerLogementsDepuisServeur() {
 }
 
 // --- 2. GESTION DU VERROU DE PAIEMENT UNIQUE (300 F) ---
+const paymentOverlay = document.getElementById('payment-overlay');
 const btnPayAccess = document.getElementById('btn-pay-access');
 
-if (btnPayAccess) {
-    btnPayAccess.addEventListener('click', () => {
-        CinetPay.setConfig({
-            apikey: 'TA_CLE_API_CINETPAY', // Remplace par ta clé API trouvée sur ton dashboard CinetPay
-            site_id: 'TON_SITE_ID',       // Remplace par ton Site ID
-            notify_url: 'http://ton-site.com/notify',
-            mode: 'PRODUCTION'            // Utilise 'TEST' pour commencer
-        });
-
-        CinetPay.getCheckout({
-            transaction_id: Math.floor(Math.random() * 1000000).toString(),
-            amount: 300,
-            currency: 'XAF',
-            channels: 'MOBILE_MONEY', // Active MTN et Airtel Money automatiquement
-            description: 'Accès à vie Brazza Logement',
-        });
-
-        CinetPay.waitResponse(function(data) {
-            if (data.status == "REFUSED") {
-                alert("Paiement refusé : " + data.message);
-            } else if (data.status == "ACCEPTED") {
-                alert("Paiement réussi ! Bienvenue sur Brazza Logement.");
-                // Cacher l'overlay
-                document.getElementById('payment-overlay').style.display = 'none';
-            }
-        });
+if (btnPayAccess && paymentOverlay) {
+    btnPayAccess.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("Simulation CinetPay : Paiement de 300 FCFA effectué avec succès !");
+        paymentOverlay.style.setProperty('display', 'none', 'important');
+        paymentOverlay.style.opacity = '0';
+        paymentOverlay.style.pointerEvents = 'none';
     });
 }
 
