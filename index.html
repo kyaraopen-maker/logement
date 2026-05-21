@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.cinetpay.com/seamless/main.js"></script>
+    <title>Brazza Logement</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // L'URL de ton projet
+  const SUPABASE_URL = "https://nwpyewohvrnztneittya.supabase.co";
+  
+  // Ta clé publique "Anon / Publishable"
+  const SUPABASE_KEY = "sb_publishable_N2Jjx4Nn_tuPEODuqo03gQ_hGG-GVjV";
+
+  // Initialisation et partage direct avec le script.js
+  window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+</head>
+<body>
+
+    <!-- ================= CONTENU PRINCIPAL ================= -->
+    <main id="app-content">
+        
+        <!-- SECTION ACCUEIL -->
+        <section id="screen-accueil" class="screen active">
+            <header class="main-header">
+                <h1>Brazza <span>Logement</span></h1>
+                <p>Trouvez votre futur chez-vous à Brazzaville</p>
+            </header>
+
+            <!-- Barre de Recherche -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Quel quartier ? (Bacongo, Ouenzé...)">
+                </div>
+                <div class="filter-box">
+                    <select id="filter-type">
+                        <option value="tous">Tous les types</option>
+                        <option value="chambre">Chambre</option>
+                        <option value="appartement">Appartement</option>
+                        <option value="maison">Maison entière</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Liste des Logements -->
+            <h2 class="section-title">Annonces disponibles</h2>
+            <div class="logements-grid" id="logements-container">
+                <!-- Les cartes de maisons seront injectées ici par le JS -->
+            </div>
+        </section>
+
+        <!-- SECTION PUBLIER ANNONCE DIRECTE -->
+        <section id="screen-publier" class="screen">
+            <div class="agent-card">
+                <div class="dashboard-header">
+                    <h2>Ajouter un logement</h2>
+                </div>
+                <p class="welcome-text">Remplissez le formulaire ci-dessous pour publier votre annonce gratuitement sur la plateforme.</p>
+
+                <!-- Formulaire Unique d'Ajout direct -->
+                <form id="add-logement-form">
+                    
+                    <!-- Coordonnées du contact -->
+                    <h3><i class="fa-solid fa-user"></i> Vos Coordonnées</h3>
+                    <div class="input-group">
+                        <label>Votre Nom complet</label>
+                        <input type="text" id="new-agent-nom" required placeholder="Ex: Jean Packo">
+                    </div>
+                    <div class="input-group">
+                        <label>Votre Numéro (MTN / Airtel)</label>
+                        <input type="tel" id="new-agent-tel" required placeholder="Ex: 06 600 00 00">
+                    </div>
+
+                    <hr class="separator" style="margin: 15px 0;">
+
+                    <!-- Infos Logement -->
+                    <h3><i class="fa-solid fa-house-medical"></i> Infos du Logement</h3>
+                    <div class="input-group">
+                        <label>Type de bien</label>
+                        <select id="new-type">
+                            <option value="chambre">Chambre</option>
+                            <option value="appartement">Appartement</option>
+                            <option value="maison">Maison entière</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Quartier (à Brazzaville)</label>
+                        <input type="text" id="new-quartier" required placeholder="Ex: Poto-Poto, Bacongo...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Loyer mensuel (FCFA)</label>
+                        <input type="number" id="new-loyer" required placeholder="Ex: 70000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Description & Détails</label>
+                        <textarea id="new-desc" rows="3" required placeholder="Ex: Canalisé, douche interne, compteur personnel..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Photo du logement</label>
+                        <input type="file" id="new-photo" accept="image/*">
+                        <small class="info-file">Fichier simulé en local (Front-End)</small>
+                    </div>
+
+                    <button type="submit" class="btn-success" style="margin-top: 10px;">Publier l'annonce</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= BARRE DE NAVIGATION BASSE CORRIGÉE ================= -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-screen="screen-accueil">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </div>
+        <div class="nav-item" data-screen="screen-publier">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Publier</span>
+        </div>
+    </nav>
+
+
+    <!-- ================= RIDEAU DE PAIEMENT ACCÈS À VIE (300 FCFA) ================= -->
+    <div id="payment-overlay" class="overlay-pay">
+        <div class="pay-card">
+            <h2><i class="fa-solid fa-lock" style="color: #2563eb;"></i> Accès Brazza Logement</h2>
+            <p>Pour accéder à toutes les annonces de logements à Brazzaville et contacter directement les propriétaires à vie, l'accès unique est de :</p>
+            <div class="price-tag-big">300 FCFA</div>
+            <p class="small-info">Paiement sécurisé par Mobile Money (MTN / Airtel)</p>
+         <button id="btn-pay-access" onclick="document.getElementById('payment-overlay').style.setProperty('display', 'none', 'important'); alert('Simulation CinetPay : Paiement de 300 FCFA effectué avec succès !');" class="btn-primary">Débloquer mon accès à vie</button>
+        </div>
+    </div>
+
+    <!-- ================= MODALE : DÉTAILS DU LOGEMENT & CONTACT ================= -->
+    <div id="details-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modal-img" src="" alt="Photo logement">
+            <div class="modal-body">
+                <div class="modal-header-info">
+                    <span id="modal-tag" class="logement-tag"></span>
+                    <span id="modal-price" class="logement-price"></span>
+                </div>
+                <div id="modal-quartier" class="logement-quartier"></div>
+                <p id="modal-desc" class="logement-desc"></p>
+                
+                <hr class="separator">
+                
+                <!-- Infos de contact direct -->
+                <h3><i class="fa-solid fa-user-shield"></i> Contact de l'Annonceur</h3>
+                <div class="agent-info-box">
+                    <p><strong>Nom de l'auteur :</strong> <span id="agent-name">---</span></p>
+                    <a id="agent-call" href="#" class="btn-call"><i class="fa-solid fa-phone"></i> Appeler</a>
+                    <a id="agent-whatsapp" href="#" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Écrire sur WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
