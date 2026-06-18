@@ -1,334 +1,485 @@
-/* Réinitialisation et base */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; color: white; }
-body { background: #050505; }
+/* --- Variables & Reset --- */
+:root {
+    --bg-color: #f4f6f9;
+    --card-bg: #ffffff;
+    --primary: #2563eb;
+    --primary-light: #dbeafe;
+    --success: #16a34a;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --nav-bg: rgba(255, 255, 255, 0.85);
+}
 
-/* === NOUVEAU : Barre de navigation (Taskbar) === */
-.taskbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding-bottom: 80px; /* Espace pour pas que la nav cache le contenu */
+}
+
+/* --- Gestion des écrans --- */
+.screen {
+    display: none;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.screen.active {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Header & Formulaires --- */
+.main-header h1 {
+    font-size: 24px;
+    color: #111827;
+}
+
+.main-header h1 span {
+    color: var(--primary);
+}
+
+.main-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+/* --- Barre de Recherche --- */
+.search-container {
     display: flex;
-    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.search-box {
+    flex: 2;
+    background: var(--card-bg);
+    display: flex;
     align-items: center;
-    padding: 15px 5%;
-    background: rgba(5, 5, 5, 0.6); /* Fond semi-transparent */
-    backdrop-filter: blur(12px); /* Effet verre */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 1000; /* Toujours au-dessus de la vidéo */
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-.taskbar-brand {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+.search-box i {
+    color: var(--text-muted);
+    margin-right: 10px;
 }
 
-.btn-publish {
-    padding: 10px 20px;
-    border-radius: 10px;
+.search-box input {
     border: none;
-    background: #6366f1;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: 0.3s;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-}
-
-.btn-publish:hover {
-    background: #4f46e5;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-}
-/* ============================================== */
-
-/* Vidéo Hero - Plein écran */
-.hero { height: 70vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.bg-video { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-.overlay { position: absolute; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0.3), #050505); }
-.hero-content { z-index: 1; text-align: center; }
-.hero-content h1 { font-size: 3.5rem; letter-spacing: -1px; margin-bottom: 10px; }
-
-/* Grille Marketplace - Aspect Premium */
-.container { padding: 2rem 5%; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-top: 2rem; }
-
-.product-card { 
-    background: rgba(255, 255, 255, 0.03); 
-    border-radius: 20px; 
-    overflow: hidden; 
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.product-card:hover { 
-    transform: translateY(-10px); 
-    border-color: #6366f1; 
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2); 
-}
-
-.product-card img { width: 100%; height: 220px; object-fit: cover; }
-.card-content { padding: 20px; }
-.card-content h3 { font-size: 1.2rem; margin-bottom: 8px; }
-.card-content p { color: #6366f1; font-weight: 700; }
-
-/* Formulaire "Glass" */
-.glass-form { 
-    background: rgba(255,255,255,0.03); 
-    padding: 2rem; 
-    border-radius: 25px; 
-    display: flex; 
-    gap: 15px; 
-    justify-content: center; 
-    border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-}
-
-input { 
-    padding: 14px 20px; border-radius: 12px; border: 1px solid #333; 
-    background: rgba(0,0,0,0.2); color: white; width: 250px; 
-}
-
-/* Bouton
-
-
-/* === FENÊTRE MODALE (POP-UP) === */
-.modal {
-    display: none; /* Caché par défaut */
-    position: fixed;
-    z-index: 2000; /* Au dessus de tout */
-    left: 0;
-    top: 0;
+    outline: none;
     width: 100%;
+    font-size: 15px;
+}
+
+.filter-box select {
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
+    background: var(--card-bg);
+    border: none;
+    outline: none;
+    padding: 0 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    font-size: 14px;
+    color: var(--text-main);
+    cursor: pointer;
 }
 
-.modal-content {
-    position: relative;
-    flex-direction: column; /* Force les éléments à s'empiler */
-    width: 90%;
-    max-width: 450px;
-    text-align: center;
+.section-title {
+    font-size: 18px;
+    margin-bottom: 15px;
 }
 
-.modal-content h2 { margin-bottom: 20px; }
-
-.modal-content form {
+/* --- Cartes Logement --- */
+.logements-grid {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.logement-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.logement-img {
     width: 100%;
-}
-
-.modal-content input { width: 100%; }
-
-.close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-.close-btn:hover { color: #6366f1; }
-
-/* === NOUVELLES INFOS SUR LES CARTES === */
-.shop-info {
-    font-size: 0.85rem;
-    color: #ccc;
-    margin-top: 8px;
-}
-.phone-info {
-    font-size: 0.85rem;
-    color: #4f46e5;
-    font-weight: bold;
-    margin-top: 4px;
-}
-
-
-/* === CARROUSEL D'IMAGES (MULTI-PHOTOS) === */
-.card-images {
-    display: flex;
-    overflow-x: auto; /* Permet le défilement horizontal */
-    scroll-snap-type: x mandatory; /* Force l'arrêt sur une image entière */
-    scroll-behavior: smooth;
-    width: 100%;
-}
-
-/* Cache la barre de défilement pour un look propre */
-.card-images::-webkit-scrollbar {
-    display: none;
-}
-.card-images {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.card-images img {
-    width: 100%;
-    flex-shrink: 0; /* Empêche les images de rétrécir */
-    scroll-snap-align: start; /* Aligne l'image lors du glissement */
-    height: 220px;
+    height: 180px;
     object-fit: cover;
+    background-color: #e5e7eb; /* Fallback si pas d'image */
 }
 
-/* === BOUTON WHATSAPP === */
-.btn-whatsapp {
-    display: inline-block;
-    width: 100%;
-    margin-top: 15px;
-    padding: 10px;
-    background-color: #25D366; /* Vert WhatsApp officiel */
-    color: white;
-    text-align: center;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: background-color 0.3s;
+.logement-info {
+    padding: 15px;
 }
 
-.btn-whatsapp:hover {
-    background-color: #1ebc5a;
-    color: white;
-}
-
-
-/* === STYLES DU SLIDER (FLÈCHES) === */
-.slider-container {
-    position: relative;
-    width: 100%;
-}
-
-.slider-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    z-index: 10;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    transition: 0.3s;
-}
-
-.slider-btn.left { left: 5px; }
-.slider-btn.right { right: 5px; }
-
-.slider-btn:hover {
-    background: #6366f1; /* Couleur de votre thème au survol */
-}
-
-/* On s'assure que les images sont bien alignées */
-.card-images {
+.logement-header {
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    width: 100%;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.card-images::-webkit-scrollbar {
-    display: none;
-}
-
-.card-images img {
-    width: 100%;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    height: 220px;
-    object-fit: cover;
-}
-
-body.intro-active {
-    overflow: hidden; /* Empêche de scroller vers le bas pendant l'intro */
-}
-
-.intro-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999; /* Par-dessus TOUT le reste du site */
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    background: #000;
+    margin-bottom: 8px;
 }
 
-.intro-video {
-    position: absolute;
-    top: 0;
-    left: 0;
+.logement-tag {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.logement-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.logement-quartier {
+    font-size: 15px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 5px;
+}
+
+.logement-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* --- Style Espace Agent --- */
+.agent-card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+
+.agent-card h2 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.badge-agent {
+    background: #dcfce7;
+    color: var(--success);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.welcome-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+/* --- Formulaires inputs --- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.input-group input, .input-group select, .input-group textarea {
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+    border-color: var(--primary);
+}
+
+.info-file {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 11px;
+}
+
+/* --- Boutons --- */
+button {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.5; /* Assombrit un peu la vidéo pour voir le texte */
-}
-
-.intro-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* Un joli dégradé noir vers transparent */
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.4));
-}
-
-.intro-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    color: #fff;
-    padding: 20px;
-}
-
-.intro-title {
-    font-size: 3.5rem;
-    margin-bottom: 10px;
-    opacity: 0; /* Caché par défaut, animé par JS */
-    transform: translateY(30px);
-}
-
-.intro-subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 40px;
-    color: #cbd5e1;
-    opacity: 0;
-    transform: translateY(30px);
-}
-
-.intro-btn {
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 30px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    backdrop-filter: blur(10px);
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.3s ease;
+    transition: background 0.2s;
 }
 
-.intro-btn:hover {
-    background: #6366f1; /* Ta couleur principale */
-    border-color: #6366f1;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-    transform: scale(1.05) translateY(0) !important;
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: var(--success); color: white; }
+.btn-success:hover { background: #15803d; }
+
+/* --- Barre de Navigation Basse GIVRÉE (Glassmorphism) --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 450px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(10px); /* L'effet givré */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
 }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    width: 60px;
+}
+
+.nav-item i {
+    font-size: 20px;
+}
+
+.nav-item span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.nav-item.active {
+    color: var(--primary);
+    transform: scale(1.1);
+}
+
+
+
+/* --- Rideau de paiement (300 F) --- */
+.overlay-pay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(17, 24, 39, 0.95);
+    z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.pay-card {
+    background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+}
+.pay-card h2 { font-size: 22px; margin-bottom: 15px; }
+.pay-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.price-tag-big { font-size: 36px; font-weight: 800; color: var(--primary); margin-bottom: 20px; }
+.small-info { font-size: 12px !important; margin-top: -10px; font-style: italic; }
+
+/* --- Fenêtre Modale des Détails --- */
+.modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-content {
+    background: white; width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; position: relative;
+    animation: scaleUp 0.3s ease-in-out;
+}
+@keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.close-modal {
+    position: absolute; top: 15px; right: 20px; font-size: 30px; color: white; cursor: pointer;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-weight: bold; z-index: 10;
+}
+#modal-img { width: 100%; height: 220px; object-fit: cover; }
+.modal-body { padding: 20px; }
+.modal-header-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
+.separator { border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+.modal-body h3 { font-size: 16px; margin-bottom: 12px; color: #374151; }
+
+/* --- Zone Agent & Boutons de contact --- */
+.agent-info-box { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #e5e7eb; }
+.agent-info-box p { font-size: 14px; margin-bottom: 8px; }
+.btn-call, .btn-whatsapp {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; padding: 10px; border-radius: 8px; color: white; text-decoration: none;
+    font-weight: 600; font-size: 14px; margin-top: 10px; text-align: center;
+}
+.btn-call { background: #4b5563; }
+.btn-whatsapp { background: #25d366; }
+
+    
+        /* Overlay plein écran ultra sombre et flouté */
+        #payment-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 99999;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Carte effet verre trempé (Glassmorphism) */
+        .premium-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .premium-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .premium-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        /* Superbe animation d'écriture */
+        .typing-wrapper {
+            display: inline-block;
+            margin: 25px 0;
+        }
+
+.premium-typing {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 30%, #a855f7 100%);
+    -webkit-background-clip: text;
+    background-clip: text; /* Ajoute cette ligne standard pour nettoyer l'alerte */
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid #a855f7;
+    width: 0;
+    animation: typing 2s steps(22) forwards, blink 0.75s step-end infinite;
+}
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: #a855f7; }
+        }
+
+        /* Bouton Premium */
+        .btn-premium {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-premium:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+        }
+
+        /* Liste des témoignages style moderne */
+        .premium-testimonials {
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .premium-testimonial-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+        }
+
+        .premium-testimonial-item p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .premium-testimonial-item span {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #a855f7;
+            font-style: normal;
+        }
+    

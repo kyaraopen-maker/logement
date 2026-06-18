@@ -1,81 +1,323 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <meta name="google-site-verification" content="SWnRNbCJE4a67z4LelDjnTb02a0k9yyLDGbZT_Br_oo" />
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <title>Vente Rapide | Marketplace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" href="./asset/Gemini_Generated_Image_62r9ok62r9ok62r9.png">
+    <link rel="apple-touch-icon" href="./asset/Gemini_Generated_Image_62r9ok62r9ok62r9.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta name="apple-mobile-web-app-title" content="Vente Rapide">
+    <meta name="description" content="Achetez et vendez rapidement vos articles, vêtements, téléphones et accessoires à Brazzaville.">
+    <meta name="keywords" content="vente rapide, marketplace Congo, acheter Brazzaville, friperie, téléphones, Poto-Poto, Bacongo">
+    <meta name="author" content="Vente Rapide">
+    <title>Vente Rapide</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+      const SUPABASE_URL = "https://nwpyewohvrnztneittya.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_N2Jjx4Nn_tuPEODuqo03gQ_hGG-GVjV";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+
+    <!-- STYLE PREMIUM & CARROUSEL IMAGES -->
+    <style>
+        /* Styles de l'Onboarding Glassmorphism */
+        #payment-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 99999;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .premium-card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 35px 25px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            color: #ffffff;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .premium-card h2 { font-size: 1.8rem; margin-bottom: 15px; font-weight: 700; letter-spacing: -0.5px; }
+        .premium-card p { color: rgba(255, 255, 255, 0.7); font-size: 1rem; line-height: 1.5; margin-bottom: 25px; }
+        .typing-wrapper { display: inline-block; margin: 25px 0; }
+        .premium-typing {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, #a855f7 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            border-right: 3px solid #a855f7;
+            width: 0;
+            animation: typing 2s steps(22) forwards, blink 0.75s step-end infinite;
+        }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink { from, to { border-color: transparent; } 50% { border-color: #a855f7; } }
+        .btn-premium {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white; border: none; padding: 14px 35px; font-size: 1.05rem; font-weight: 600; border-radius: 50px; cursor: pointer; width: 100%; box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3); transition: transform 0.2s;
+        }
+        .btn-premium:active { transform: scale(0.98); }
+        .premium-testimonials { margin: 25px 0; text-align: left; }
+        .premium-testimonial-item { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.06); padding: 15px; border-radius: 16px; margin-bottom: 15px; }
+        .premium-testimonial-item p { color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; margin-bottom: 8px; font-style: italic; }
+        .premium-testimonial-item span { display: block; font-size: 0.8rem; font-weight: 600; color: #a855f7; }
+
+        /* ================= STYLE DU CARROUSEL DE LA MODALE ================= */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            background-color: #f3f4f6;
+            overflow: hidden;
+        }
+        .carousel-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none; /* Masquées par défaut, gérées par le JS */
+        }
+        .carousel-container img.active {
+            display: block;
+        }
+        /* Flèches de navigation du carrousel */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .carousel-btn:hover { background: rgba(0, 0, 0, 0.8); }
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+        
+        /* Indicateurs de position (points) */
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+        }
+        .carousel-dot.active {
+            background: #a855f7;
+            transform: scale(1.2);
+        }
+    </style>
 </head>
-<body class="intro-active">
+<body>
 
-    <div id="introScreen" class="intro-screen">
-        <video autoplay muted loop playsinline class="intro-video">
-            <source src="https://cdn.pixabay.com/video/2019/09/24/27178-361730768_large.mp4" type="video/mp4">
-        </video>
-        <div class="intro-overlay"></div>
-        <div class="intro-content">
-            <h1 class="intro-title">Bienvenue sur Vente Rapide</h1>
-            <p class="intro-subtitle">Faites les meilleures affaires, avant tout le monde.</p>
-            <button id="enterSiteBtn" class="intro-btn">Entrer dans la boutique</button>
+    <main id="app-content">
+        
+        <!-- SECTION ACCUEIL -->
+        <section id="screen-accueil" class="screen active">
+            <header class="main-header">
+                <h1>Vente <span>Rapide</span></h1>
+                <p>Achetez et vendez en un clic à Brazzaville</p>
+            </header>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-input" placeholder="Que recherchez-vous ? (Quartier, produit...)">
+                </div>
+                <div class="filter-box">
+                    <select id="filter-type">
+                        <option value="tous">Toutes les catégories</option>
+                        <option value="chambre">Vêtements & Mode</option>
+                        <option value="appartement">Téléphones & Électronique</option>
+                        <option value="maison">Chaussures & Accessoires</option>
+                    </select>
+                </div>
+            </div>
+
+            <h2 class="section-title">Articles disponibles</h2>
+            <div class="logements-grid" id="logements-container"></div>
+        </section>
+
+        <!-- SECTION PUBLIER -->
+        <section id="screen-publier" class="screen">
+            <div class="agent-card">
+                <div class="dashboard-header">
+                    <h2>Ajouter un article</h2>
+                </div>
+                <p class="welcome-text">Remplissez le formulaire ci-dessous pour publier votre article gratuitement sur la plateforme.</p>
+
+                <form id="add-logement-form">
+                    <h3><i class="fa-solid fa-user"></i> Vos Coordonnées</h3>
+                    <div class="input-group">
+                        <label>Votre Nom complet</label>
+                        <input type="text" id="new-agent-nom" required placeholder="Ex: Jean Packo">
+                    </div>
+                    <div class="input-group">
+                        <label>Votre Numéro (MTN / Airtel)</label>
+                        <input type="tel" id="new-agent-tel" required placeholder="Ex: 06 600 00 00">
+                    </div>
+
+                    <hr class="separator" style="margin: 15px 0;">
+
+                    <h3><i class="fa-solid fa-box-open"></i> Infos de l'article</h3>
+                    <div class="input-group">
+                        <label>Catégorie</label>
+                        <select id="new-type">
+                            <option value="chambre">Vêtements & Mode</option>
+                            <option value="appartement">Téléphones & Électronique</option>
+                            <option value="maison">Chaussures & Accessoires</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Quartier (à Brazzaville)</label>
+                        <input type="text" id="new-quartier" required placeholder="Ex: Poto-Poto, Bacongo...">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Prix de vente (FCFA)</label>
+                        <input type="number" id="new-loyer" required placeholder="Ex: 15000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Description & État</label>
+                        <textarea id="new-desc" rows="3" required placeholder="Ex: État propre, carton disponible..."></textarea>
+                    </div>
+
+                    <!-- AJOUT DE L'ATTRIBUT MULTIPLE ICI -->
+                    <div class="input-group">
+                        <label>Photos de l'article (Plusieurs choix possibles)</label>
+                        <input type="file" id="new-photo" accept="image/*" multiple>
+                        <small class="info-file">Vous pouvez sélectionner plusieurs photos à la fois.</small>
+                    </div>
+
+                    <button type="submit" class="btn-success" style="margin-top: 10px;">Publier l'article</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-screen="screen-accueil">
+            <i class="fa-solid fa-shop"></i>
+            <span>Boutique</span>
         </div>
-    </div>
-
-    <nav class="taskbar">
-        <div class="taskbar-brand">Vente Rapide</div>
-        <div class="taskbar-menu">
-            <button class="btn-publish" id="openModalBtn">➕ Publier un article</button>
+        <div class="nav-item" data-screen="screen-publier">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>Vendre</span>
         </div>
     </nav>
 
-    <div id="publishModal" class="modal">
-        <div class="modal-content glass-form">
-            <span class="close-btn" id="closeModalBtn">&times;</span>
-            <h2>Publier un article</h2>
-            <form id="sellForm">
-                <input type="text" id="prodName" placeholder="Nom de l'article" required>
-                <input type="number" id="prodPrice" placeholder="Prix (FCFA)" required>
-                <input type="text" id="shopName" placeholder="Nom de la boutique" required>
-                <input type="tel" id="phoneNumber" placeholder="Numéro (ex: 242060000000)" required>
-                <input type="file" id="imageInput" accept="image/*" multiple required>
-                <button type="submit">Publier l'article</button>
-            </form>
+    <!-- RIDEAU D'ACCUEIL PREMIUM -->
+    <div id="payment-overlay">
+        <div id="step-welcome" class="premium-card" style="display: block;">
+            <h2><i class="fa-solid fa-bolt" style="color: #a855f7;"></i> Vente Rapide</h2>
+            <div class="typing-wrapper">
+                <div class="premium-typing"> Vente Rapide</div>
+            </div>
+            <p>La marketplace de référence pour acheter et vendre instantanément à Brazzaville.</p>
+            <button class="btn-premium" onclick="document.getElementById('step-welcome').style.display='none'; document.getElementById('step-testimonials').style.display='block';">OK</button>
+        </div>
+
+        <div id="step-testimonials" class="premium-card" style="display: none;">
+            <h2><i class="fa-solid fa-fire" style="color: #ff4757;"></i> Déjà adopté par des milliers de Brazzavillois</h2>
+            <p>Rejoins une communauté active et commence à faire de bonnes affaires dès aujourd'hui.</p>
+            <div class="premium-testimonials">
+                <div class="premium-testimonial-item">
+                    <p>"J'ai publié mon iPhone le matin, vendu à 14h à Poto-Poto. Franchement, c'est du lourd !"</p>
+                    <span>— Serge K.</span>
+                </div>
+                <div class="premium-testimonial-item">
+                    <p>"Idéal pour vider ses placards rapidement ou choper de la fripe de qualité."</p>
+                    <span>— Syntiche M.</span>
+                </div>
+            </div>
+            <button class="btn-premium" onclick="document.getElementById('payment-overlay').style.setProperty('display', 'none', 'important');">Suivant</button>
         </div>
     </div>
 
-    <header class="hero">
-        <video autoplay muted loop playsinline class="bg-video">
-            <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-        <div class="hero-content">
-            <h1>Vente Rapide</h1>
-            <p>Achetez et vendez en toute simplicité.</p>
-        </div>
-    </header>
-
-    <main class="container">
-        <section class="marketplace">
-            <h2>Articles en vedette</h2>
+    <!-- ================= MODALE MODIFIÉE EN CARROUSEL D'IMAGES ================= -->
+    <div id="details-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
             
-            <div class="product-grid" id="productGrid"></div>
-        </section>
-    </main>
+            <!-- Conteneur Carrousel dynamique -->
+            <div class="carousel-container" id="modal-carousel-container">
+                <!-- Les balises <img> et boutons flèches seront injectés ou mis à jour ici -->
+                <img id="modal-img" src="" alt="Photo produit" class="active">
+                <button class="carousel-btn prev" id="carousel-prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="carousel-btn next" id="carousel-next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="carousel-dots" id="carousel-dots-container"></div>
+            </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+            <div class="modal-body">
+                <div class="modal-header-info">
+                    <span id="modal-tag" class="logement-tag"></span>
+                    <span id="modal-price" class="logement-price"></span>
+                </div>
+                <div id="modal-quartier" class="logement-quartier"></div>
+                <p id="modal-desc" class="logement-desc"></p>
+                
+                <hr class="separator">
+                
+                <h3><i class="fa-solid fa-user-shield"></i> Contact du Vendeur</h3>
+                <div class="agent-info-box">
+                    <p><strong>Nom :</strong> <span id="agent-name">---</span></p>
+                    <a id="agent-call" href="#" class="btn-call"><i class="fa-solid fa-phone"></i> Appeler</a>
+                    <a id="agent-whatsapp" href="#" target="_blank" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Écrire sur WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
-    
-    <script>
-        // Fonction de slide des images globale
-        function slideImages(button, direction) {
-            const container = button.parentElement.querySelector('.card-images');
-            const scrollAmount = container.clientWidth;
-            if(direction === 'right') {
-                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            } else {
-                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            }
-        }
-    </script>
 </body>
 </html>
