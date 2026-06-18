@@ -1,13 +1,14 @@
 /* --- Variables & Reset --- */
 :root {
-    --bg-color: #f4f6f9;
-    --card-bg: #ffffff;
-    --primary: #2563eb;
-    --primary-light: #dbeafe;
-    --success: #16a34a;
-    --text-main: #1f2937;
-    --text-muted: #6b7280;
-    --nav-bg: rgba(255, 255, 255, 0.85);
+    --bg-color: #0b0f19;       /* Fond Bleu de Nuit Ultra Profond */
+    --card-bg: rgba(22, 28, 45, 0.6); /* Cartes sombres transparentes */
+    --card-bg-solid: #161c2d; /* Pour les éléments qui ont besoin d'un fond opaque */
+    --primary: #3b82f6;        /* Bleu électrique premium */
+    --primary-light: rgba(59, 130, 246, 0.15);
+    --success: #10b981;
+    --text-main: #f3f4f6;      /* Texte clair presque blanc */
+    --text-muted: #9ca3af;     /* Texte secondaire grisé */
+    --nav-bg: rgba(15, 23, 42, 0.7); /* Navigation floutée givrée */
 }
 
 * {
@@ -48,7 +49,7 @@ body {
 /* --- Header & Formulaires --- */
 .main-header h1 {
     font-size: 24px;
-    color: #111827;
+    color: #ffffff;
 }
 
 .main-header h1 span {
@@ -71,11 +72,14 @@ body {
 .search-box {
     flex: 2;
     background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     padding: 12px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .search-box i {
@@ -84,20 +88,22 @@ body {
 }
 
 .search-box input {
+    background: transparent;
     border: none;
     outline: none;
     width: 100%;
     font-size: 15px;
+    color: var(--text-main);
 }
 
 .filter-box select {
     height: 100%;
-    background: var(--card-bg);
-    border: none;
+    background: var(--card-bg-solid);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     outline: none;
     padding: 0 15px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     font-size: 14px;
     color: var(--text-main);
     cursor: pointer;
@@ -106,6 +112,7 @@ body {
 .section-title {
     font-size: 18px;
     margin-bottom: 15px;
+    color: #ffffff;
 }
 
 /* --- Cartes Logement --- */
@@ -117,16 +124,19 @@ body {
 
 .logement-card {
     background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .logement-img {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    background-color: #e5e7eb; /* Fallback si pas d'image */
+    background-color: #1f2937; /* Fallback sombre si pas d'image */
 }
 
 .logement-info {
@@ -142,7 +152,7 @@ body {
 
 .logement-tag {
     background: var(--primary-light);
-    color: var(--primary);
+    color: #60a5fa; /* Bleu plus clair pour rester bien lisible sur le sombre */
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 12px;
@@ -153,13 +163,13 @@ body {
 .logement-price {
     font-size: 18px;
     font-weight: 700;
-    color: var(--text-main);
+    color: #ffffff;
 }
 
 .logement-quartier {
     font-size: 15px;
     font-weight: 500;
-    color: #374151;
+    color: #e5e7eb;
     margin-bottom: 5px;
 }
 
@@ -172,28 +182,32 @@ body {
 /* --- Style Espace Agent --- */
 .agent-card {
     background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 25px;
     border-radius: 20px;
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .agent-card h2 {
     font-size: 20px;
     margin-bottom: 8px;
+    color: #ffffff;
 }
 
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
 .badge-agent {
-    background: #dcfce7;
-    color: var(--success);
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
@@ -217,20 +231,23 @@ body {
 .input-group label {
     font-size: 13px;
     font-weight: 600;
-    color: #4b5563;
+    color: #9ca3af;
 }
 
 .input-group input, .input-group select, .input-group textarea {
+    background: rgba(15, 23, 42, 0.5);
     padding: 10px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
     font-size: 14px;
+    color: var(--text-main);
     outline: none;
-    transition: border 0.2s;
+    transition: border 0.2s, box-shadow 0.2s;
 }
 
 .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
     border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 .info-file {
@@ -248,15 +265,15 @@ button {
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
 }
 
 .btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: #1d4ed8; }
 .btn-success { background: var(--success); color: white; }
-.btn-success:hover { background: #15803d; }
+.btn-success:hover { background: #059669; }
 
-/* --- Barre de Navigation Basse GIVRÉE (Glassmorphism) --- */
+/* --- Barre de Navigation Basse GIVRÉE (Glassmorphism Sombre) --- */
 .bottom-nav {
     position: fixed;
     bottom: 15px;
@@ -265,14 +282,14 @@ button {
     width: 90%;
     max-width: 450px;
     background: var(--nav-bg);
-    backdrop-filter: blur(10px); /* L'effet givré */
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px); /* Effet givré accentué */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
     border-radius: 25px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     z-index: 100;
 }
 
@@ -301,19 +318,18 @@ button {
     transform: scale(1.1);
 }
 
-
-
 /* --- Rideau de paiement (300 F) --- */
 .overlay-pay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(17, 24, 39, 0.95);
+    background: rgba(10, 10, 12, 0.95);
     z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .pay-card {
-    background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 400px;
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+    background: #161c2d; padding: 30px; border-radius: 24px; text-align: center; max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
-.pay-card h2 { font-size: 22px; margin-bottom: 15px; }
+.pay-card h2 { font-size: 22px; margin-bottom: 15px; color: white; }
 .pay-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
 .price-tag-big { font-size: 36px; font-weight: 800; color: var(--primary); margin-bottom: 20px; }
 .small-info { font-size: 12px !important; margin-top: -10px; font-style: italic; }
@@ -321,10 +337,11 @@ button {
 /* --- Fenêtre Modale des Détails --- */
 .modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(0, 0, 0, 0.8); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .modal-content {
-    background: white; width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; position: relative;
+    background: #161c2d; width: 100%; max-width: 500px; border-radius: 20px; overflow: hidden; position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     animation: scaleUp 0.3s ease-in-out;
 }
 @keyframes scaleUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -335,86 +352,82 @@ button {
 #modal-img { width: 100%; height: 220px; object-fit: cover; }
 .modal-body { padding: 20px; }
 .modal-header-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
-.separator { border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0; }
-.modal-body h3 { font-size: 16px; margin-bottom: 12px; color: #374151; }
+.separator { border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 20px 0; }
+.modal-body h3 { font-size: 16px; margin-bottom: 12px; color: #e5e7eb; }
 
 /* --- Zone Agent & Boutons de contact --- */
-.agent-info-box { background: #f9fafb; padding: 15px; border-radius: 12px; border: 1px solid #e5e7eb; }
-.agent-info-box p { font-size: 14px; margin-bottom: 8px; }
+.agent-info-box { background: rgba(15, 23, 42, 0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); }
+.agent-info-box p { font-size: 14px; margin-bottom: 8px; color: #f3f4f6; }
 .btn-call, .btn-whatsapp {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     width: 100%; padding: 10px; border-radius: 8px; color: white; text-decoration: none;
     font-weight: 600; font-size: 14px; margin-top: 10px; text-align: center;
 }
-.btn-call { background: #4b5563; }
-.btn-whatsapp { background: #25d366; }
+.btn-call { background: #374151; }
+.btn-call:hover { background: #4b5563; }
+.btn-whatsapp { background: #22c55e; }
+.btn-whatsapp:hover { background: #16a34a; }
 
-    
-        /* Overlay plein écran ultra sombre et flouté */
-        #payment-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 10, 12, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 99999;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+/* Overlay plein écran ultra sombre et flouté */
+#payment-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 12, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 99999;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
 
-        /* Carte effet verre trempé (Glassmorphism) */
-        .premium-card {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 24px;
-            padding: 35px 25px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            color: #ffffff;
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.5s ease-out;
-        }
+/* Carte effet verre trempé (Glassmorphism) */
+.premium-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 35px 25px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.premium-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
 
-        .premium-card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
+.premium-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
 
-        .premium-card p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-
-        /* Superbe animation d'écriture */
-        .typing-wrapper {
-            display: inline-block;
-            margin: 25px 0;
-        }
+/* Superbe animation d'écriture */
+.typing-wrapper {
+    display: inline-block;
+    margin: 25px 0;
+}
 
 .premium-typing {
     font-size: 1.6rem;
     font-weight: 800;
     background: linear-gradient(135deg, #fff 30%, #a855f7 100%);
     -webkit-background-clip: text;
-    background-clip: text; /* Ajoute cette ligne standard pour nettoyer l'alerte */
+    background-clip: text; 
     -webkit-text-fill-color: transparent;
     white-space: nowrap;
     overflow: hidden;
@@ -423,63 +436,62 @@ button {
     animation: typing 2s steps(22) forwards, blink 0.75s step-end infinite;
 }
 
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
 
-        @keyframes blink {
-            from, to { border-color: transparent; }
-            50% { border-color: #a855f7; }
-        }
+@keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: #a855f7; }
+}
 
-        /* Bouton Premium */
-        .btn-premium {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+/* Bouton Premium */
+.btn-premium {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        .btn-premium:active {
-            transform: scale(0.98);
-            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
-        }
+.btn-premium:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+}
 
-        /* Liste des témoignages style moderne */
-        .premium-testimonials {
-            margin: 25px 0;
-            text-align: left;
-        }
+/* Liste des témoignages style moderne */
+.premium-testimonials {
+    margin: 25px 0;
+    text-align: left;
+}
 
-        .premium-testimonial-item {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 15px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
+.premium-testimonial-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 15px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+}
 
-        .premium-testimonial-item p {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 0.95rem;
-            margin-bottom: 8px;
-            font-style: italic;
-            line-height: 1.4;
-        }
+.premium-testimonial-item p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-style: italic;
+    line-height: 1.4;
+}
 
-        .premium-testimonial-item span {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #a855f7;
-            font-style: normal;
-        }
-    
+.premium-testimonial-item span {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #a855f7;
+    font-style: normal;
+}
