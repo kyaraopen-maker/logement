@@ -1,267 +1,310 @@
-// On récupère dynamiquement la connexion globale initialisée dans le HTML
-let dbClient = window.supabase;
-
-// Tableau local qui va stocker temporairement les logements récupérés
-let logements = [];
-
-// --- LOGEMENTS DE SECOURS (Affichés si ta base Supabase est vide ou inaccessible) ---
-const logementsSecours = [
-    {
-        id: 1,
-        type: "Appartement",
-        quartier: "Bacongo",
-        prix: 150000,
-        desc: "Bel appartement de 2 chambres, salon, douche interne, électricité disponible.",
-        img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500",
-        agent: { nom: "Agence Hiram", tel: "066000000" }
-    },
-    {
-        id: 2,
-        type: "Chambre",
-        quartier: "Poto-Poto",
-        prix: 50000,
-        desc: "Chambre single propre, canalisée, compteur personnel, entrée indépendante.",
-        img: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500",
-        agent: { nom: "Hiram Architech", tel: "055000000" }
-    }
-];
-
-// --- 1. CHARGEMENT DES DONNÉES DEPUIS SUPABASE ---
-async function chargerLogementsDepuisServeur() {
-    dbClient = window.supabase;
-
-    if (!dbClient) {
-        console.warn("Supabase indisponible, chargement des données locales.");
-        logements = logementsSecours;
-        afficherLogements(logements);
-        return;
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // --- CONFIGURATION SUPABASE SÉCURISÉE ---
+    const supabaseUrl = 'https://pbtbgmnmqjvpicomnzgn.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBidGJnbW5tcWp2cGljb21uemduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NzgwNTAsImV4cCI6MjA5NjE1NDA1MH0.lTB0XvRRiqNPlwug17hnYqBiLIxj5fXWGfJrV9cJyxY';
+    
+    let supabase = null;
+    if (window.supabase) {
+        supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    } else {
+        console.warn("⚠️ Le script global Supabase n'est pas chargé.");
     }
 
-    try {
-        const { data, error } = await dbClient
-            .from('logements')
-            .select('*')
-            .order('id', { ascending: false });
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-            logements = data.map(l => ({
-                id: l.id,
-                type: l.type,
-                quartier: l.quartier,
-                prix: l.prix,
-                desc: l.desc_texte, 
-                // SI TU VOIS CETTE IMAGE DE CHANTIER (CASQUE), C'EST QUE L'IMAGE N'EST PAS BIEN ARRIVÉE EN BASE !
-                img: l.img || "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500",
-                agent: {
-                    nom: l.agent_nom || "Anonyme",
-                    tel: l.agent_tel || "066000000"
-                }
-            }));
-        } else {
-            console.log("La table Supabase est vide. Affichage des exemples.");
-            logements = logementsSecours;
+    // --- ARTICLES DE SECOURS (Affichés en cas de table vide ou erreur) ---
+    const articlesSecours = [
+        {
+            id: 1,
+            nom: "Chaussure Sneaker Luxe",
+            prix: 45000,
+            boutique: "Enki Style Boutique",
+            telephone: "242060000000",
+            images: ["https://picsum.photos/400/300?random=1", "https://picsum.photos/400/300?random=2"]
+        },
+        {
+            id: 2,
+            nom: "iPhone 13 Pro Max 256Go",
+            prix: 450000,
+            boutique: "Hiram Tech",
+            telephone: "242050000000",
+            images: ["https://picsum.photos/400/300?random=3"]
         }
-    } catch (err) {
-        console.error("Erreur de connexion, bascule sur le secours :", err);
-        logements = logementsSecours;
-    }
+    ];
 
-    afficherLogements(logements);
-}
+    // --- FONCTION POUR GÉNÉRER LA CARTE D'UN ARTICLE ---
+    function createArticleCard(article) {
+        const name = article.nom || article.Nom || "Article sans nom";
+        const price = article.prix || article.Prix || 0;
+        const shopName = article.boutique || article.Boutique || "Boutique inconnue";
+        const phoneNumber = article.telephone || article.Téléphone || "";
+        let imagesData = article.images || article.Images || [];
 
-// --- 2. GESTION DU VERROU DE PAIEMENT UNIQUE (300 F) ---
-const paymentOverlay = document.getElementById('payment-overlay');
-const btnPayAccess = document.getElementById('btn-pay-access');
+        // Tolérance si images est une chaîne de texte simple au lieu d'un tableau
+        if (typeof imagesData === 'string') {
+            imagesData = [imagesData];
+        }
 
-if (btnPayAccess && paymentOverlay) {
-    btnPayAccess.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        alert("Simulation CinetPay : Paiement de 300 FCFA effectué avec succès !");
-        paymentOverlay.style.setProperty('display', 'none', 'important');
-        paymentOverlay.style.opacity = '0';
-        paymentOverlay.style.pointerEvents = 'none';
-    });
-}
-
-// --- 3. GESTION DE LA NAVIGATION BASSE ---
-const navItems = document.querySelectorAll('.nav-item');
-const screens = document.querySelectorAll('.screen');
-
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-        screens.forEach(screen => screen.classList.remove('active'));
-        const targetScreen = item.getAttribute('data-screen');
-        const screenElement = document.getElementById(targetScreen);
-        if (screenElement) screenElement.classList.add('active');
-    });
-});
-
-// --- 4. AFFICHAGE DES LOGEMENTS ---
-const container = document.getElementById('logements-container');
-
-function afficherLogements(liste) {
-    if (!container) return;
-    container.innerHTML = ""; 
-
-    if(liste.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:gray; margin-top:20px;">Aucun logement trouvé.</p>`;
-        return;
-    }
-
-    liste.forEach(logement => {
-        const card = document.createElement('div');
-        card.className = 'logement-card';
-        card.innerHTML = `
-            <img src="${logement.img}" class="logement-img" alt="Photo logement" style="cursor:pointer;" onclick="ouvrirDetails(${logement.id})">
-            <div class="logement-info">
-                <div class="logement-header">
-                    <span class="logement-tag">${logement.type}</span>
-                    <span class="logement-price">${logement.prix.toLocaleString()} FCFA</span>
+        const imagesHtml = imagesData.length > 0 
+            ? imagesData.map(src => `<img src="${src}" alt="Produit">`).join('')
+            : `<img src="https://via.placeholder.com/400x300?text=Pas+d'image" alt="Aucune image">`;
+        
+        let sliderHtml = "";
+        if (imagesData.length > 1) {
+            sliderHtml = `
+                <div class="slider-container">
+                    <button type="button" class="slider-btn left" onclick="slideImages(this, 'left')">&#10094;</button>
+                    <div class="card-images">${imagesHtml}</div>
+                    <button type="button" class="slider-btn right" onclick="slideImages(this, 'right')">&#10095;</button>
                 </div>
-                <div class="logement-quartier"><i class="fa-solid fa-location-dot" style="color:#2563eb;"></i> ${logement.quartier}</div>
-                <p class="logement-desc">${logement.desc}</p>
-                <small style="color:#2563eb; display:block; margin-top:10px; font-weight:600; cursor:pointer;" onclick="ouvrirDetails(${logement.id})">
-                    <i class="fa-solid fa-eye"></i> Cliquez sur l'image pour voir le contact
-                </small>
+            `;
+        } else {
+            sliderHtml = `
+                <div class="slider-container">
+                    <div class="card-images">${imagesHtml}</div>
+                </div>
+            `;
+        }
+        
+        const cleanPhone = phoneNumber.replace(/[^0-9]/g, '');
+        const waMessage = encodeURIComponent(`Bonjour, je suis intéressé par votre article : ${name}`);
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            ${sliderHtml}
+            <div class="card-content">
+                <h3>${name}</h3>
+                <p><strong>${price.toLocaleString()} FCFA</strong></p>
+                <div class="shop-info">🛒 ${shopName}</div>
+                <div class="phone-info">📞 ${phoneNumber}</div>
+                <a href="https://wa.me/${cleanPhone}?text=${waMessage}" target="_blank" class="btn-whatsapp">
+                    💬 Écrire sur WhatsApp
+                </a>
             </div>
         `;
-        container.appendChild(card);
-    });
-}
+        return card;
+    }
 
-// --- 5. OUVERTURE DE LA MODALE DÉTAILS ---
-const modal = document.getElementById('details-modal');
-const closeModal = document.querySelector('.close-modal');
+    // --- CHARGEMENT AUTOMATIQUE AVEC SYSTEME DE SECOURS ---
+    async function loadArticles() {
+        const grid = document.getElementById('productGrid');
+        if (!grid) return;
 
-function ouvrirDetails(id) {
-    const maison = logements.find(l => l.id === id);
-    if(!maison || !modal) return;
+        grid.innerHTML = ''; // Nettoie la grille
 
-    document.getElementById('modal-img').src = maison.img;
-    document.getElementById('modal-tag').innerText = maison.type;
-    document.getElementById('modal-price').innerText = `${maison.prix.toLocaleString()} FCFA`;
-    document.getElementById('modal-quartier').innerHTML = `<i class="fa-solid fa-location-dot" style="color:#2563eb;"></i> ${maison.quartier}`;
-    document.getElementById('modal-desc').innerText = maison.desc;
-    document.getElementById('agent-name').innerText = maison.agent.nom;
-    
-    document.getElementById('agent-call').href = `tel:${maison.agent.tel}`;
-    document.getElementById('agent-whatsapp').href = `https://wa.me/242${maison.agent.tel}?text=Bonjour, je suis intéressé par votre annonce de ${maison.type} à ${maison.quartier} sur Brazza Logement.`;
-
-    modal.classList.remove('hidden');
-}
-
-if (closeModal) closeModal.addEventListener('click', () => modal.classList.add('hidden'));
-window.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('hidden'); });
-
-// --- 6. FILTRE ET RECHERCHE ---
-const searchInput = document.getElementById('search-input');
-const filterType = document.getElementById('filter-type');
-
-function filtrer() {
-    if (!searchInput || !filterType) return;
-    const texte = searchInput.value.toLowerCase().trim();
-    const typeSelectionne = filterType.value;
-
-    const resultat = logements.filter(logement => {
-        const correspondQuartier = logement.quartier.toLowerCase().includes(texte);
-        const correspondType = (typeSelectionne === "tous") || (logement.type === typeSelectionne);
-        return correspondQuartier && correspondType;
-    });
-    afficherLogements(resultat);
-}
-if (searchInput) searchInput.addEventListener('input', filtrer);
-if (filterType) filterType.addEventListener('change', filtrer);
-
-// --- 7. ENVOI RÉEL DE L'ANNONCE SUR SUPABASE ---
-const addForm = document.getElementById('add-logement-form');
-
-if (addForm) {
-    addForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        dbClient = window.supabase;
-
-        const type = document.getElementById('new-type').value;
-        const quartier = document.getElementById('new-quartier').value;
-        const prix = parseInt(document.getElementById('new-loyer').value);
-        const desc = document.getElementById('new-desc').value;
-
-        if (!dbClient) {
-            alert("Supabase indisponible. Enregistrement local.");
+        // Si Supabase a échoué au chargement initial
+        if (!supabase) {
+            console.warn("Supabase indisponible, bascule sur les articles de secours.");
+            articlesSecours.forEach(article => grid.appendChild(createArticleCard(article)));
             return;
         }
 
-        const agentNomEl = document.getElementById('new-agent-nom');
-        const agentTelEl = document.getElementById('new-agent-tel');
-        const nomAuteur = agentNomEl ? agentNomEl.value : "Anonyme";
-        const telAuteur = agentTelEl ? agentTelEl.value : "066000000";
-        
-        const photoInput = document.getElementById('new-photo');
-        const photoFile = photoInput && photoInput.files ? photoInput.files[0] : null;
+        try {
+            const { data, error } = await supabase
+                .from('articles')
+                .select('*')
+                .order('id', { ascending: false });
 
-        // Image par défaut si AUCUN fichier n'est sélectionné
-        let finalImgUrl = "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500";
+            if (error) throw error;
 
-        // Traitement de la photo si elle existe
-        if (photoFile && dbClient.storage) {
-            const nomUniqueFichier = `${Date.now()}_${photoFile.name.replace(/\s+/g, '_')}`;
-            console.log("Tentative d'upload de la photo :", nomUniqueFichier);
-
-            const { data: uploadData, error: uploadError } = await dbClient.storage
-                .from('photos-logements')
-                .upload(nomUniqueFichier, photoFile);
-
-            if (uploadError) {
-                console.error("Erreur Storage Supabase :", uploadError);
-                alert(`Erreur Storage : ${uploadError.message}`);
+            console.log("📦 Données reçues de Supabase :", data);
+            
+            if (data && data.length > 0) {
+                data.forEach(article => {
+                    grid.appendChild(createArticleCard(article));
+                });
             } else {
-                const { data: linkData } = dbClient.storage
-                    .from('photos-logements')
-                    .getPublicUrl(nomUniqueFichier);
-                
-                if (linkData && linkData.publicUrl) {
-                    finalImgUrl = linkData.publicUrl;
-                    console.log("Image ajoutée avec succès :", finalImgUrl);
-                }
+                console.log("La table 'articles' est vide sur Supabase. Chargement du secours.");
+                articlesSecours.forEach(article => grid.appendChild(createArticleCard(article)));
             }
+        } catch (err) {
+            console.error("❌ Erreur Supabase, bascule sur les exemples :", err.message || err);
+            // Affichage du secours pour éviter l'écran blanc en cas de coupure ou problème de RLS
+            articlesSecours.forEach(article => grid.appendChild(createArticleCard(article)));
         }
+    }
 
-        // Insertion en base de données
-        const { error: insertError } = await dbClient
-            .from('logements')
-            .insert([
-                {
-                    type: type,
-                    quartier: quartier,
-                    prix: prix,
-                    desc_texte: desc,
-                    img: finalImgUrl, // L'URL de TA photo va ici !
-                    agent_nom: nomAuteur,
-                    agent_tel: telAuteur  
-                }
-            ]);
+    // Lance le chargement global dès l'ouverture du site
+    loadArticles();
 
-        if (insertError) {
-            console.error("Erreur insertion table :", insertError);
-            alert(`Erreur insertion : ${insertError.message}`);
-            return;
+    // --- ANIMATION D'INTRODUCTION ---
+    if (typeof gsap !== 'undefined') {
+        gsap.to(".intro-title", { duration: 1, opacity: 1, y: 0, delay: 0.5, ease: "power3.out" });
+        gsap.to(".intro-subtitle", { duration: 1, opacity: 1, y: 0, delay: 0.8, ease: "power3.out" });
+        gsap.to(".intro-btn", { duration: 1, opacity: 1, y: 0, delay: 1.1, ease: "power3.out" });
+
+        const enterBtn = document.getElementById("enterSiteBtn");
+        const introScreen = document.getElementById("introScreen");
+
+        if(enterBtn && introScreen) {
+            enterBtn.addEventListener("click", () => {
+                gsap.to(introScreen, { 
+                    duration: 1, 
+                    opacity: 0, 
+                    y: "-100%", 
+                    ease: "power3.inOut", 
+                    onComplete: () => {
+                        introScreen.style.display = "none";
+                        document.body.classList.remove("intro-active");
+                    } 
+                });
+            });
         }
+    } else {
+        const introScreen = document.getElementById("introScreen");
+        if(introScreen) introScreen.style.display = "none";
+        document.body.classList.remove("intro-active");
+    }
 
-        addForm.reset();
-        await chargerLogementsDepuisServeur();
+    // --- GESTION DE LA FENÊTRE MODALE ---
+    const modal = document.getElementById("publishModal");
+    const openBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
 
-        setTimeout(() => {
-            alert("Génial ! Votre annonce a été publiée avec succès !");
-            document.querySelector('[data-screen="screen-accueil"]').click();
-        }, 200);
+    if (openBtn) openBtn.addEventListener("click", () => modal.style.display = "flex");
+    if (closeModalBtn) closeModalBtn.addEventListener("click", () => modal.style.display = "none");
+    
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
     });
-}
 
-window.addEventListener('DOMContentLoaded', () => {
-    chargerLogementsDepuisServeur();
+    // --- GESTION DU FORMULAIRE DE PUBLICATION ---
+    const sellForm = document.getElementById('sellForm');
+
+    if (sellForm) {
+        sellForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = sellForm.querySelector('button[type="submit"]');
+            if(submitBtn) {
+                submitBtn.innerText = "Publication en cours...";
+                submitBtn.disabled = true;
+            }
+
+            if (!supabase) {
+                alert("Supabase est inaccessible actuellement. Impossible de publier en ligne.");
+                if(submitBtn) { submitBtn.innerText = "Publier l'article"; submitBtn.disabled = false; }
+                return;
+            }
+
+            const name = document.getElementById('prodName').value;
+            const rawPrice = document.getElementById('prodPrice').value.replace(/\s/g, '');
+            const price = parseFloat(rawPrice) || 0;
+            const shopName = document.getElementById('shopName').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const fileInput = document.getElementById('imageInput');
+            const files = Array.from(fileInput.files);
+            
+            if (files.length === 0) {
+                alert("Veuillez choisir au moins une image.");
+                if(submitBtn) { submitBtn.innerText = "Publier l'article"; submitBtn.disabled = false; }
+                return; 
+            }
+
+            // --- ENVOI DES DONNÉES VERS SUPABASE ---
+            let imagesData = []; 
+            try {
+                for (let file of files) {
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const filePath = `produits/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage.from('images_articles').upload(filePath, file);
+                    if (uploadError) throw uploadError;
+
+                    const { data } = supabase.storage.from('images_articles').getPublicUrl(filePath);
+                    imagesData.push(data.publicUrl);
+                }
+
+                const { error: dbError } = await supabase.from('articles').insert([{ 
+                    nom: name, 
+                    prix: price, 
+                    boutique: shopName, 
+                    telephone: phoneNumber, 
+                    images: imagesData 
+                }]);
+                
+                if (dbError) throw dbError;
+
+            } catch (error) {
+                console.error("❌ ERREUR SUPABASE DÉTAILLÉE :", error);
+                alert(`Erreur lors de la publication : ${error.message || "Vérifiez vos configurations."}`);
+                if(submitBtn) { submitBtn.innerText = "Publier l'article"; submitBtn.disabled = false; }
+                return;
+            }
+
+            // Ajout visuel local immédiat sur l'interface
+            const grid = document.getElementById('productGrid');
+            const card = createArticleCard({ nom: name, prix: price, boutique: shopName, telephone: phoneNumber, images: imagesData });
+            
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)'; 
+            if (grid) grid.prepend(card); 
+            
+            if (typeof gsap !== 'undefined') {
+                gsap.to(card, { duration: 0.8, opacity: 1, y: 0, ease: "power2.out" });
+            } else {
+                card.style.transition = 'all 0.8s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }
+
+            showSuccessPopup();
+            modal.style.display = "none";
+            sellForm.reset();
+            if(submitBtn) { submitBtn.innerText = "Publier l'article"; submitBtn.disabled = false; }
+        });
+    }
+
+    // --- POP-UP ANIMÉ DE REUSSITE ---
+    function showSuccessPopup() {
+        const popup = document.createElement('div');
+        popup.innerHTML = `
+            <div class="popup-box" style="background: #1e1e24; color: white; padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.5); border: 2px solid #a855f7; max-width: 450px; width: 85%;">
+                <div style="font-size: 60px; margin-bottom: 15px; filter: drop-shadow(0 0 10px #a855f7);">🎉</div>
+                <h2 style="margin: 0 0 15px 0; font-family: 'Poppins', sans-serif; font-size: 26px; color: #a855f7;">Félicitations !</h2>
+                <p style="margin: 0; font-family: sans-serif; font-size: 16px; line-height: 1.5; color: #e2e8f0;">
+                    Vous venez de publier votre article sur <strong style="color: #fff; text-shadow: 0 0 8px #a855f7;">Vente Rapide</strong>.
+                </p>
+            </div>
+        `;
+
+        stylePopup(popup);
+        document.body.appendChild(popup);
+        const box = popup.querySelector('.popup-box');
+
+        if (typeof gsap !== 'undefined') {
+            gsap.set(box, { scale: 0.5, y: 50 });
+            gsap.to(popup, { duration: 0.4, opacity: 1, ease: "power2.out" });
+            gsap.to(box, { duration: 0.6, scale: 1, y: 0, ease: "back.out(1.7)" });
+            gsap.to(box, { duration: 0.4, scale: 0.5, y: -30, delay: 3, ease: "power2.in" });
+            gsap.to(popup, { duration: 0.4, opacity: 0, delay: 3, ease: "power2.in", onComplete: () => popup.remove() });
+        } else {
+            popup.style.transition = 'opacity 0.4s ease';
+            setTimeout(() => popup.style.opacity = '1', 10);
+            setTimeout(() => {
+                popup.style.opacity = '0';
+                setTimeout(() => popup.remove(), 400);
+            }, 3000);
+        }
+    }
+
+    function stylePopup(popup) {
+        Object.assign(popup.style, {
+            position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+            backgroundColor: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(8px)',
+            display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: '999999', opacity: '0'
+        });
+    }
 });
+
+// --- FONCTION DE SLIDE GLOBALE (Accessible depuis le HTML) ---
+window.slideImages = function(button, direction) {
+    const container = button.parentElement.querySelector('.card-images');
+    const scrollAmount = container.clientWidth;
+    if(direction === 'right') {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    } else {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    }
+};
